@@ -234,3 +234,55 @@ exports.deleteComment = async (req, res) => {
 
 
 
+// Like a note (or unlike if already liked)
+exports.likeNote = async (req, res) => {
+  try {
+    const noteId = req.params.id;
+    const userId = req.user._id; // Get the logged-in user ID
+
+    // Find the note
+    const note = await Note.findById(noteId);
+    if (!note) {
+      return res.status(404).json({ error: "Note not found" });
+    }
+
+    // Check if the user has already liked the note
+    const likedIndex = note.likes.indexOf(userId);
+
+    if (likedIndex === -1) {
+      // User hasn't liked the note yet, so like it
+      note.likes.push(userId);
+    } else {
+      // User has liked the note, so unlike it
+      note.likes.splice(likedIndex, 1);
+    }
+
+    // Save the updated note
+    await note.save();
+
+    // Return the updated like count
+    res.json({ success: true, likes: note.likes.length });
+  } catch (err) {
+    console.error("Error liking note:", err);
+    res.status(500).json({ error: "Error liking note" });
+  }
+};
+
+// Get like count for a note
+exports.getLikeCount = async (req, res) => {
+  try {
+    const noteId = req.params.id;
+
+    const note = await Note.findById(noteId);
+    if (!note) {
+      return res.status(404).json({ error: "Note not found" });
+    }
+
+    // Return the like count and whether the user has liked it
+    const liked = note.likes.includes(req.user._id); // Check if the current user has liked this note
+    res.json({ likes: note.likes.length, liked });
+  } catch (err) {
+    console.error("Error fetching like count:", err);
+    res.status(500).json({ error: "Error fetching like count" });
+  }
+};

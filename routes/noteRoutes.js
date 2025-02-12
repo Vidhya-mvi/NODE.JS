@@ -17,5 +17,7 @@ router.delete('/notes/:id/comments/delete/:commentId', auth, noteController.dele
 router.get('/notes/:id', auth, noteController.viewNote);
 router.get('/MyBlog', auth, noteController.viewUserBlogs);
 router.get('/',  noteController.getHomePage);
+router.post("/notes/:id/like", auth,noteController.likeNote);
+router.get("/notes/:id/like-status", auth,noteController.getLikeCount);
 
 module.exports = router;

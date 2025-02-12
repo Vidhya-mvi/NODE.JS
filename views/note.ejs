@@ -5,6 +5,11 @@
     <h1><%= note.title %></h1>
     <p><%= note.content %></p>
 
+<!-- HTML for the Like button -->
+<button class="like-btn" data-note-id="<%= note._id %>" id="like-btn-<%= note._id %>">
+  ❤️ <span id="like-count-<%= note._id %>"><%= note.likes.length || 0 %></span>
+</button>
+
     <h3>Comments</h3>
     <ul id="comment-list-<%= note._id %>">
       <% if (Array.isArray(note.comments) && note.comments.length > 0) { %>  
@@ -111,4 +116,54 @@
   }
 
   attachDeleteListeners();
+
+  document.querySelectorAll(".like-btn").forEach(button => {
+    const noteId = button.getAttribute("data-note-id");
+    const likeCountElement = document.getElementById(`like-count-${noteId}`);
+    
+    // Fetch the like status and count for the note
+    fetch(`/notes/${noteId}/like-status`)
+      .then(response => response.json())
+      .then(data => {
+        likeCountElement.textContent = data.likes;
+        
+        if (data.liked) {
+          button.classList.add("liked");
+        } else {
+          button.classList.remove("liked");
+        }
+      })
+      .catch(error => console.error("Error fetching like status:", error));
+
+    // Event listener for the Like button
+    button.addEventListener("click", async function() {
+      const likeCountElement = document.getElementById(`like-count-${noteId}`);
+
+      try {
+        const response = await fetch(`/notes/${noteId}/like`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          likeCountElement.textContent = data.likes;
+          this.classList.toggle("liked"); // Toggle the "liked" class to change appearance
+        } else {
+          alert("Error liking/unliking the note.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Error liking/unliking the note.");
+      }
+    });
+  });
+
+  
 </script>
+
+<style>
+  .like-btn.liked {
+    color: red; /* Style change when liked */
+  }
+</style>
