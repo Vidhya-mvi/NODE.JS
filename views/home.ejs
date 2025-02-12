@@ -1,0 +1,26 @@
+<%- include('include/header') %>
+
+<h1>Latest Blogs</h1>
+
+<% if (typeof blogs !== 'undefined' && blogs.length > 0) { %>
+  <% blogs.forEach(blog => { %>
+    <div class="blog-card">
+      <h3><%= blog.title %></h3>
+      <p><%= blog.content.substring(0, 200) %>...</p> 
+    </div>
+  <% }) %>
+<% } else { %>
+  <p>No blogs available.</p>
+<% } %>
+
+<%- include('include/footer') %>
+
+<style>
+  .blog-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+</style>

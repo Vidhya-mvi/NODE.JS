@@ -1,0 +1,134 @@
+<%- include('include/header2') %>
+
+<h1>My Blogs</h1>
+
+<% if (notes && notes.length > 0) { %>
+  <% notes.forEach(note => { %>
+    <div class="note-card">
+      <h3><%= note.title %></h3>
+      <p><%= note.content %></p>
+      <div class="note-actions">
+        <form action="/notes/<%= note._id %>?_method=DELETE" method="POST" style="display:inline;">
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+        <button class="btn btn-secondary edit-btn" data-id="<%= note._id %>" data-title="<%= note.title %>" data-content="<%= note.content %>">Edit</button>
+      </div>
+    </div>
+  <% }) %>
+<% } else { %>
+  <p>No blogs found. Create one!</p>
+<% } %>
+
+<script>
+window.onload = function () {
+  const modal = document.getElementById("editModal");
+  const closeModalBtn = document.getElementById("closeModalBtn");
+  const editForm = document.getElementById("editForm");
+
+  const editBtns = document.querySelectorAll('.edit-btn');
+
+  editBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const noteId = this.dataset.id;
+      const noteTitle = this.dataset.title;
+      const noteContent = this.dataset.content;
+
+      console.log("Editing note:", noteId);
+
+      if (!noteId) {
+        alert("Error: Note ID not found!");
+        return;
+      }
+
+      document.getElementById("modal-title").value = noteTitle;
+      document.getElementById("modal-content").value = noteContent;
+
+      modal.style.display = "flex";
+      editForm.action = `/notes/${noteId}?_method=PUT`;
+    });
+  });
+
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', function() {
+      modal.style.display = "none";
+    });
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('deleted') === 'true') {
+    Swal.fire({
+      title: "Deleted!",
+      text: "The blog was deleted successfully.",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 2000,
+      position: "top-end",
+      toast: true
+    });
+  }
+};
+</script>
+
+<style>
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+  max-width: 90%;
+  position: relative;
+}
+
+#closeModalBtn {
+  position: absolute;
+  top: 24%;
+  right: 32%;
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#editForm {
+  display: grid;
+  gap: 4px;
+}
+
+.modal-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+</style>
+
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <h4>Edit blog</h4>
+    <form id="editForm" method="POST">
+      <label for="title">Title:</label>
+      <input type="text" id="modal-title" name="title" required>
+
+      <label for="content">Content:</label>
+      <textarea id="modal-content" name="content" required></textarea>
+
+      <button class="btn btn-primary" type="submit">Update blog</button>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button id="closeModalBtn" class="btn btn-secondary">X</button>
+  </div>
+</div>
+
+<%- include('include/footer') %>

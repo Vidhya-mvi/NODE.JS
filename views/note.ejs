@@ -1,0 +1,114 @@
+<%- include('include/header2') %>
+
+<% notes.forEach(note => { %>
+  <div class="note-card">
+    <h1><%= note.title %></h1>
+    <p><%= note.content %></p>
+
+    <h3>Comments</h3>
+    <ul id="comment-list-<%= note._id %>">
+      <% if (Array.isArray(note.comments) && note.comments.length > 0) { %>  
+        <% note.comments.forEach(comment => { %>
+          <li>
+            <strong><%= comment.user?.username || "Unknown User" %>:</strong> <%= comment.text %>
+            <% if (user && (user.isAdmin || (comment.user && comment.user.toString() === user._id.toString()))) { %>
+              <form action="/notes/<%= note._id %>/comments/delete/<%= comment._id %>" method="POST" class="delete-comment-form">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            <% } %>
+          </li>
+        <% }) %>
+      <% } else { %>
+        <p>No comments available.</p>
+      <% } %>
+    </ul>
+
+    <% if (user) { %>
+      <!-- Add a new comment -->
+      <form action="/notes/<%= note._id %>/comments" method="POST" id="comment-form-<%= note._id %>">
+        <textarea name="text" required></textarea>
+        <button type="submit" class="btn btn-primary">Add Comment</button>
+      </form>
+    <% } else { %>
+      <p>You must be logged in to comment.</p>
+    <% } %>
+
+  </div>
+<% }) %>
+
+<%- include('include/footer') %>
+
+<!-- Add your script here -->
+<script>
+  document.querySelectorAll('form[id^="comment-form-"]').forEach(form => {
+    form.addEventListener('submit', async function(event) {
+      event.preventDefault();  
+
+      const noteId = this.id.replace('comment-form-', '');  
+      const text = this.querySelector('textarea').value.trim();
+
+      if (!text) {
+        alert("Please enter a comment.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`/notes/${noteId}/comments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          const commentList = document.querySelector(`#comment-list-${noteId}`);
+          const newComment = document.createElement("li");
+
+          // Display correct username
+          newComment.innerHTML = `
+            <strong>${data.username || "Unknown User"}:</strong> ${text}
+            <form action="/notes/${noteId}/comments/delete/${data.commentId}" method="POST" class="delete-comment-form">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          `;
+
+          commentList.appendChild(newComment);
+          this.querySelector('textarea').value = "";
+
+          attachDeleteListeners();
+        } else {
+          alert(data.error || "Error adding comment.");
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error adding comment.');
+      }
+    });
+  });
+
+  function attachDeleteListeners() {
+    document.querySelectorAll(".delete-comment-form").forEach(form => {
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const formAction = this.action;
+
+        try {
+          const response = await fetch(formAction, { method: "DELETE" });
+
+          if (response.ok) {
+            this.closest("li").remove(); 
+          } else {
+            alert("Error deleting comment.");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Error deleting comment.");
+        }
+      });
+    });
+  }
+
+  attachDeleteListeners();
+</script>

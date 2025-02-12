@@ -1,0 +1,16 @@
+<ul>
+  <% if (Array.isArray(note.comments) && note.comments.length > 0) { %>
+    <% note.comments.forEach(comment => { %>
+      <li>
+        <%= comment.text ? comment.text : 'No text available' %>
+        <% if (comment.user && comment.user.name) { %>
+          - <strong><%= comment.user.name %></strong>
+        <% } else { %>
+          - <strong>Unknown User</strong>
+        <% } %>
+      </li>
+    <% }) %>
+  <% } else { %>
+    <p>No comments yet.</p>
+  <% } %>
+</ul>
