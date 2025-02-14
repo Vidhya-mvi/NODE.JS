@@ -1,22 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloging App</title>
+  <link rel="stylesheet" href="../public/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+<body>
 <%- include('include/header2') %>
 
+
+<a href="/notes/new" class="btn btn-primary mt-3">Create New Blog</a>
 <% notes.forEach(note => { %>
   <div class="note-card">
     <h1><%= note.title %></h1>
     <p><%= note.content %></p>
-
-<!-- HTML for the Like button -->
-<button class="like-btn" data-note-id="<%= note._id %>" id="like-btn-<%= note._id %>">
-  ❤️ <span id="like-count-<%= note._id %>"><%= note.likes.length || 0 %></span>
-</button>
+    <% if (note.imageUrl) { %>
+      <img src="<%= note.imageUrl %>" alt="Note Image" style="max-width: 100%; height: auto;">
+    <% } %>
+  
+    <button class="like-btn" data-note-id="<%= note._id %>" id="like-btn-<%= note._id %>">
+      ❤️ <span id="like-count-<%= note._id %>"><%= note.likes.length || 0 %></span>
+    </button>
 
     <h3>Comments</h3>
     <ul id="comment-list-<%= note._id %>">
       <% if (Array.isArray(note.comments) && note.comments.length > 0) { %>  
         <% note.comments.forEach(comment => { %>
           <li>
-            <strong><%= comment.user?.username || "Unknown User" %>:</strong> <%= comment.text %>
-            <% if (user && (user.isAdmin || (comment.user && comment.user.toString() === user._id.toString()))) { %>
+            <strong><%= comment.user ? comment.user.username : "Unknown User" %>:</strong> <%= comment.text %>
+            <% if (user && (user.role === 'admin' || (comment.user && comment.user._id.toString() === user._id.toString()))) { %>
               <form action="/notes/<%= note._id %>/comments/delete/<%= comment._id %>" method="POST" class="delete-comment-form">
                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
               </form>
@@ -24,12 +39,13 @@
           </li>
         <% }) %>
       <% } else { %>
-        <p>No comments available.</p>
+        <p>No comments yet.</p>
       <% } %>
     </ul>
+    
 
     <% if (user) { %>
-      <!-- Add a new comment -->
+
       <form action="/notes/<%= note._id %>/comments" method="POST" id="comment-form-<%= note._id %>">
         <textarea name="text" required></textarea>
         <button type="submit" class="btn btn-primary">Add Comment</button>
@@ -43,7 +59,7 @@
 
 <%- include('include/footer') %>
 
-<!-- Add your script here -->
+
 <script>
   document.querySelectorAll('form[id^="comment-form-"]').forEach(form => {
     form.addEventListener('submit', async function(event) {
@@ -70,7 +86,6 @@
           const commentList = document.querySelector(`#comment-list-${noteId}`);
           const newComment = document.createElement("li");
 
-          // Display correct username
           newComment.innerHTML = `
             <strong>${data.username || "Unknown User"}:</strong> ${text}
             <form action="/notes/${noteId}/comments/delete/${data.commentId}" method="POST" class="delete-comment-form">
@@ -121,7 +136,7 @@
     const noteId = button.getAttribute("data-note-id");
     const likeCountElement = document.getElementById(`like-count-${noteId}`);
     
-    // Fetch the like status and count for the note
+
     fetch(`/notes/${noteId}/like-status`)
       .then(response => response.json())
       .then(data => {
@@ -135,7 +150,7 @@
       })
       .catch(error => console.error("Error fetching like status:", error));
 
-    // Event listener for the Like button
+   
     button.addEventListener("click", async function() {
       const likeCountElement = document.getElementById(`like-count-${noteId}`);
 
@@ -148,7 +163,7 @@
         const data = await response.json();
         if (response.ok) {
           likeCountElement.textContent = data.likes;
-          this.classList.toggle("liked"); // Toggle the "liked" class to change appearance
+          this.classList.toggle("liked"); 
         } else {
           alert("Error liking/unliking the note.");
         }
@@ -158,12 +173,21 @@
       }
     });
   });
-
-  
 </script>
 
-<style>
+<!-- <style>
   .like-btn.liked {
-    color: red; /* Style change when liked */
-  }
-</style>
+  color: red;
+  font-weight: bold;
+  transition: color 0.3s ease;
+  border: none;
+  background-color: transparent;
+}
+.like-btn.liked:hover{
+  color: red;
+  font-weight: bold;
+  transition: color 0.3s ease;
+  border: none;
+  background-color: transparent;
+}
+</style> -->

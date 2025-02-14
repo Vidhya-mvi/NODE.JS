@@ -1,10 +1,11 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Blog = require('../models/note');
+const Comment = require('../models/comment');
+// const Admin = require('../models/admin');
 
 require('dotenv').config();
-
-
 
 exports.signup = async (req, res) => {
   try {
@@ -30,11 +31,6 @@ exports.signup = async (req, res) => {
   }
 };
 
-
-
-
-
-
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -43,8 +39,6 @@ exports.login = async (req, res) => {
     console.log("User Found:", user); 
 
     if (!user) return res.status(400).send('User not found');
-
-    
 
     const isMatch = await bcrypt.compare(password, user.password);
     console.log("Password Match:", isMatch); 
@@ -66,6 +60,4 @@ exports.login = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
-
-
 

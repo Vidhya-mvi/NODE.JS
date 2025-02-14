@@ -1,3 +1,6 @@
+
+
+
 <%- include('include/header') %>
 
 <h1>Latest Blogs</h1>
@@ -17,10 +20,16 @@
 
 <style>
   .blog-card {
-    border: 1px solid #ddd;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-  }
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.blog-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+}
 </style>

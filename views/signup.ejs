@@ -1,3 +1,4 @@
+
 <%- include('include/header') %>
 <h1>Sign Up</h1>
 <% if (typeof error !== 'undefined') { %>
@@ -22,4 +23,45 @@
   </div>
   <button type="submit" class="btn btn-primary">Sign Up</button>
 </form>
-<%- include('include/footer') %>
+
+
+
+
+<style>
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+</style>

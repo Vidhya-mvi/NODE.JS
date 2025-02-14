@@ -1,4 +1,4 @@
-// models/note.js
+
 
 const mongoose = require('mongoose');
 
@@ -10,6 +10,10 @@ const noteSchema = new mongoose.Schema({
   content: {
     type: String,
     required: true,
+  },
+  imageUrl:{
+    type: String,
+    required:true,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -26,8 +30,7 @@ const noteSchema = new mongoose.Schema({
     { 
       type: mongoose.Schema.Types.ObjectId,
        ref: "User" 
-      }
-    ],
+      }],
   
 });
 

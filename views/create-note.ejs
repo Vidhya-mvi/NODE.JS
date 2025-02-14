@@ -1,12 +1,12 @@
-<%- include('include/header') %>
-
- 
 
 
-<h1>Create New blog</h1>
 
 
-<form  action="/notes" method="POST">
+<%- include('include/header2') %>
+
+<h1>Create New Blog</h1>
+
+<form action="/notes" method="POST" enctype="multipart/form-data">
   <div class="form-group">
     <label>Title</label>
     <input type="text" name="title" class="form-control" required>
@@ -15,8 +15,15 @@
     <label>Content</label>
     <textarea name="content" class="form-control" rows="5" required></textarea>
   </div>
-  <button  type="submit" class="btn btn-primary ">Create blog</i></button>
+  <div class="form-group">
+    <label>Image</label>
+    <input type="file" name="image" class="form-control">
+  </div>
+  <button type="submit" class="btn btn-primary">Create Blog</button>
 </form>
 
-<%- include('include/footer') %>
+<script>
+  document.querySelector('.btn-primary').style.display = 'inline-block';
+</script>
 
+<%- include('include/footer') %>

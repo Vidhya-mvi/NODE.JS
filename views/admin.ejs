@@ -1,0 +1,72 @@
+<!-- <%- include('include/header2') %>
+
+<h1>Admin Panel</h1>
+
+
+<div class="admin-actions">
+  <h2>Manage Blogs</h2>
+  <ul id="blog-list">
+    <% notes.forEach(note => { %>
+      <li>
+        <h3><%= note.title %></h3>
+        <p><%= note.content %></p>
+        <a href="/admin/edit-blog/<%= note._id %>" class="btn btn-secondary">Edit</a>
+        <form action="/admin/delete-blog/<%= note._id %>" method="POST" class="delete-blog-form">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+
+  <h2>Manage Comments</h2>
+  <ul id="comment-list">
+    <% comments.forEach(comment => { %>
+      <li>
+        <p><%= comment.text %> (on blog: <%= comment.note.title %>)</p>
+        <form action="/admin/delete-comment/<%= comment._id %>" method="POST" class="delete-comment-form">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+</div>
+
+<%- include('include/footer') %>
+
+<script>
+  document.querySelectorAll(".delete-blog-form").forEach(form => {
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const formAction = this.action;
+      try {
+        const response = await fetch(formAction, { method: "DELETE" });
+        if (response.ok) {
+          this.closest("li").remove();
+        } else {
+          alert("Error deleting blog.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Error deleting blog.");
+      }
+    });
+  });
+
+  document.querySelectorAll(".delete-comment-form").forEach(form => {
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const formAction = this.action;
+      try {
+        const response = await fetch(formAction, { method: "DELETE" });
+        if (response.ok) {
+          this.closest("li").remove();
+        } else {
+          alert("Error deleting comment.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Error deleting comment.");
+      }
+    });
+  });
+</script> -->
