@@ -15,13 +15,16 @@
 <a href="/notes/new" class="btn btn-primary mt-3">Create New Blog</a>
 <% notes.forEach(note => { %>
   <div class="note-card">
-    <h1><%= note.title %></h1>
-    <p><%= note.content %></p>
-
     
+
+    <h1 class="note-title"><%= note.title %></h1>
     <% if (note.imageUrl) { %>
       <img src="<%= note.imageUrl %>" alt="Note Image" ">
     <% } %>
+    <p class="note-content"><%= note.content %></p>
+
+    
+   
   
     <button class="like-btn" data-note-id="<%= note._id %>" id="like-btn-<%= note._id %>">
       ❤️ <span id="like-count-<%= note._id %>"><%= note.likes.length || 0 %></span>
@@ -181,19 +184,3 @@
   
 </script>
 
-<!-- <style>
-  .like-btn.liked {
-  color: red;
-  font-weight: bold;
-  transition: color 0.3s ease;
-  border: none;
-  background-color: transparent;
-}
-.like-btn.liked:hover{
-  color: red;
-  font-weight: bold;
-  transition: color 0.3s ease;
-  border: none;
-  background-color: transparent;
-}
-</style> -->

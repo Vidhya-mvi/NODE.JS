@@ -38,7 +38,7 @@ exports.createNote = async (req, res) => {
     });
 
     await newNote.save();
-    res.redirect('/'); 
+    res.redirect('/myBlog'); 
   } catch (error) {
     console.error('Error creating note:', error);
     res.status(500).send('Error creating note');
@@ -96,7 +96,7 @@ exports.deleteNote = async (req, res) => {
     }
 
     await Note.findByIdAndDelete(req.params.id);
-    res.redirect('/notes?deleted=true');
+    res.redirect('/myBlog?deleted=true');
   } catch (err) {
     console.error(err);
     res.status(500).send('Error deleting note');
