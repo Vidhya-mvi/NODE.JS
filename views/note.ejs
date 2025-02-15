@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
 <body>
-<%- include('include/header2') %>
+<%- include('include/header') %>
 
 
 <a href="/notes/new" class="btn btn-primary mt-3">Create New Blog</a>
@@ -17,8 +17,10 @@
   <div class="note-card">
     <h1><%= note.title %></h1>
     <p><%= note.content %></p>
+
+    
     <% if (note.imageUrl) { %>
-      <img src="<%= note.imageUrl %>" alt="Note Image" style="max-width: 100%; height: auto;">
+      <img src="<%= note.imageUrl %>" alt="Note Image" ">
     <% } %>
   
     <button class="like-btn" data-note-id="<%= note._id %>" id="like-btn-<%= note._id %>">
@@ -47,8 +49,10 @@
     <% if (user) { %>
 
       <form action="/notes/<%= note._id %>/comments" method="POST" id="comment-form-<%= note._id %>">
-        <textarea name="text" required></textarea>
-        <button type="submit" class="btn btn-primary">Add Comment</button>
+        <div class="comment">
+        <textarea name="text" class="text" required></textarea>
+        <button type="submit" class="btn btn-primary comment-btn">Add Comment</button>
+        </div>
       </form>
     <% } else { %>
       <p>You must be logged in to comment.</p>
@@ -173,6 +177,8 @@
       }
     });
   });
+
+  
 </script>
 
 <!-- <style>

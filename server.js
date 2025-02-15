@@ -33,11 +33,14 @@ app.use(authRoutes);
 
 
 app.post('/notes/:id/comments', authMiddleware, addComment);
-
+app.get("/", (req, res) => {
+  res.render("home", { user: req.session.user, currentPage: "/" });
+});
 app.get('/', (req, res) => res.render('home'));
 app.get('/signup', (req, res) => res.render('signup'));
 app.get('/login', (req, res) => res.render('login'));
 app.get('/notes/:id/edit', updateNote);
+
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
